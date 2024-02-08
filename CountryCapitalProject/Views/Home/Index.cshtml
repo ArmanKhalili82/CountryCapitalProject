@@ -1,0 +1,57 @@
+﻿﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <form>
+        <div class="row">
+            <div class="col">
+                <select class="form-select text-center" id="cities">
+                    <option>Tehran</option>
+                    <option>Shiraz</option>
+                    <option>Tabriz</option>
+                    <option>Paris</option>
+                    <option>Lyon</option>
+                    <option>Dublin</option>
+                    <option>NewYork</option>
+                    <option>Washington DC</option>
+                </select>
+            </div>
+            <div class="col">
+                <input id="input" onkeyup="getAll()" type="text" class="form-control text-center" placeholder="جستجو...">
+                <div id="result">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    const getAll = async () => {
+        const name = document.getElementById("input").value;
+        const response = await fetch(`/Search/GetCountriesByName/${name}`);
+        const data = await response.json();
+
+        let result = "";
+        for (let d of data) {
+            result += `<br> <b onclick="getId(${d.id})" id="${d.id}">${d.name}</b>`
+        }
+
+        document.getElementById("result").innerHTML = result;
+    }
+
+    const getId = async (id) => {
+        const response = await fetch(`/Search/GetCitiesByCountryId/${id}`);
+        const data = await response.json();
+
+        let result = "";
+        for (let d of data) {
+            result += `<option>${d.name}</option>`
+        }
+
+        document.getElementById("cities").innerHTML = result
+        document.getElementById("result").innerHTML = "";
+    }
+
+</script>
